@@ -3,22 +3,28 @@ import pandas as pd
 
 # A WordPress weboldal REST API végpontja
 api_url = "https://kozlekedes.org/wp-json/mo/v1/IRSZ"
+response = requests.get(api_url)
+data = response.json()
+df = pd.DataFrame(data)
+print(df)
+
+
+# 1. Olvassuk ki a "countymegye" kulcsokat és távolítsuk el a duplikációkat
+countymegye_set = set(item["countymegye"] for item in data)
+
+# 2. Kérjünk be egy vármegye számát a felhasználótól
+print("Válassz egy vármegyét a következő számok közül:")
+for i, megye in enumerate(countymegye_set, start=1):  # Start értékkel kezdünk számolni
+    print(f"{i}. {megye}")
 
 try:
-    response = requests.get(api_url)
+    selected_index = int(input("Válassz egy számot: "))
+    selected_megye = list(countymegye_set)[selected_index - 1]
 
-    # Ellenőrizze a válasz státuszkódját
-    if response.status_code == 200:
-        # Az API válasza JSON formátumban érkezik
-        data = response.json()
+    selected_data = [item for item in data if item["countymegye"] == selected_megye]
 
-        # Most rendezzük a DataFrame-be
-        df = pd.DataFrame(data)
-
-        # Kiírhatjuk a DataFrame-et a táblázatban
-        print(df)
-
-    else:
-        print(f"Hiba történt a kérés során. Státuszkód: {response.status_code}")
-except Exception as e:
-    print(f"Hiba történt a kérés során: {str(e)}")
+    print(f"\n{selected_megye} vármegye települései és irányítószámaik:")
+    for item in selected_data:
+        print(f"{item['placenametelepls']}: {item['postalcodeirnytszm']}")
+except (ValueError, IndexError):
+    print("Hibás választás vagy érvénytelen szám.")
