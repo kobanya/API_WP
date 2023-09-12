@@ -1,4 +1,5 @@
 import requests
+from difflib import get_close_matches
 
 # A WordPress weboldal REST API 1 és 2 végpontjai
 telepules_api_url = "https://kozlekedes.org/wp-json/mo/v1/TELEPULES"
@@ -31,4 +32,12 @@ if talalatok:
             print(f"Irányítószám: {iranyitoszam.get('postalcodeirnytszm')}")
             break
 else:
-    print(f"Nincs találat a(z) '{keresett_telepules}' településre.")
+    # Ha nincs pontos találat, keressük a hasonló településneveket
+    hasonlo_nevek = get_close_matches(keresett_telepules, [telepules["nev"] for telepules in telepules_data], n=3, cutoff=0.6)
+    if hasonlo_nevek:
+        print(f"Nincs pontos találat a(z) '{keresett_telepules}' településre.")
+        print("Hasonló településnevek:")
+        for hasonlo_nev in hasonlo_nevek:
+            print(hasonlo_nev)
+    else:
+        print(f"Nincs találat a(z) '{keresett_telepules}' településre, és nincsenek hasonló nevek.")
