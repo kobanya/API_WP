@@ -4,8 +4,8 @@ import requests
 telepules_api_url = "https://kozlekedes.org/wp-json/mo/v1/TELEPULES"
 iranyitoszam_api_url = "https://kozlekedes.org/wp-json/mo/v1/IRSZ"
 
-# Inputként kérj be egy település nevet
-keresett_telepules = input("Kérem, adja meg a keresett település nevét: ")
+# Inputként kérj be egy település nevet, és használd a capitalize() metódust
+keresett_telepules = input("Kérem, adja meg a keresett település nevét: ").capitalize()
 
 # Kérjük le az összes település adatát a TELEPULES API-ból
 telepules_data = requests.get(telepules_api_url).json()
@@ -25,7 +25,7 @@ if talalatok:
     print(f"Vármegye: {talalt_telepules.get('varmegye')}")
     print(f"Lakossága: {talalt_telepules.get('lakos')} fő")
 
-    #"iranyitoszam_data" JSON
+    # Keresd meg az irányítószámot az "iranyitoszam_data" JSON-ben
     for iranyitoszam in iranyitoszam_data:
         if iranyitoszam.get("placenametelepls") == keresett_telepules:
             print(f"Irányítószám: {iranyitoszam.get('postalcodeirnytszm')}")
