@@ -34,12 +34,16 @@ while True:
                 break
         break  # Kilépünk a while ciklusból, mert találtunk helyes települést
     else:
-        # Ha nincs pontos találat, keressük a hasonló településneveket,  n3= három darab, curoff0,6 a hasonlóság mértéke
-        hasonlo_nevek = get_close_matches(keresett_telepules, [telepules["nev"] for telepules in telepules_data], n=3, cutoff=0.8)
+        # Ha nincs pontos találat, keressük a hasonló településneveket, n3= három darab, curoff0,7 a hasonlóság mértéke
+        hasonlo_nevek = get_close_matches(keresett_telepules, [telepules["nev"] for telepules in telepules_data], n=3, cutoff=0.7)
         if hasonlo_nevek:
             print(f"Nincs pontos találat a(z) '{keresett_telepules}' településre.")
             print("Hasonló településnevek:")
             for hasonlo_nev in hasonlo_nevek:
-                print(hasonlo_nev)
+                # Keresd meg a vármegyét a hasonló név alapján
+                for telepules in telepules_data:
+                    if telepules["nev"] == hasonlo_nev:
+                        print(f"{hasonlo_nev}, {telepules.get('varmegye')}")
+                        break
         else:
             print(f"Nincs találat a(z) '{keresett_telepules}' településre, és nincsenek hasonló nevek.")
