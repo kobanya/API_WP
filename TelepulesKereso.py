@@ -1,13 +1,15 @@
 import requests
 
-# A WordPress weboldal REST API 1 végpontja a településekhez
+# A WordPress weboldal REST API 1 és 2 végpontjai
 telepules_api_url = "https://kozlekedes.org/wp-json/mo/v1/TELEPULES"
+iranyitoszam_api_url = "https://kozlekedes.org/wp-json/mo/v1/IRSZ"
 
 # Inputként kérj be egy település nevet
 keresett_telepules = input("Kérem, adja meg a keresett település nevét: ")
 
 # Kérjük le az összes település adatát a TELEPULES API-ból
 telepules_data = requests.get(telepules_api_url).json()
+iranyitoszam_data = requests.get(iranyitoszam_api_url).json()
 
 # Keresd meg a bekért települést a "nev" kulcs alapján
 talalatok = [telepules for telepules in telepules_data if telepules.get("nev") == keresett_telepules]
@@ -23,5 +25,10 @@ if talalatok:
     print(f"Vármegye: {talalt_telepules.get('varmegye')}")
     print(f"Lakossága: {talalt_telepules.get('lakos')} fő")
 
+    #"iranyitoszam_data" JSON
+    for iranyitoszam in iranyitoszam_data:
+        if iranyitoszam.get("placenametelepls") == keresett_telepules:
+            print(f"Irányítószám: {iranyitoszam.get('postalcodeirnytszm')}")
+            break
 else:
     print(f"Nincs találat a(z) '{keresett_telepules}' településre.")
